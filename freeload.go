@@ -6,6 +6,7 @@ package freeload
 import (
 	"encoding/base64"
 	"encoding/json"
+	"expvar"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -13,6 +14,23 @@ import (
 	"strconv"
 	"strings"
 	"time"
+)
+
+var (
+	// expvar of a histogram of origin request times over 1ms-32s in powers of 2
+	Latencies = expvar.NewMap("Latencies")
+
+	// expvar of the current number of pending origin requests
+	PendingRequests   = expvar.NewInt("PendingRequests")
+
+	// expvar of the total origin requests that returned within time
+	SuccessRequests   = expvar.NewInt("SuccessRequests")
+
+	// expvar of total origin requests made
+	TotalRequests = expvar.NewInt("TotalRequests")
+
+	// expvar of total aggregate requests served
+	Responses = expvar.NewInt("Responses")
 )
 
 // Contains the structured fields of a complete Get
@@ -31,6 +49,34 @@ type ErrResult struct {
 
 func (me *ErrResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(me.Error())
+}
+
+// Takes a closure and builds a histogram of timings and counters for pending
+// origin requests
+func instrumentGet(inner func()) {
+	TotalRequests.Add(1)
+	PendingRequests.Add(1)
+	defer PendingRequests.Add(-1)
+
+	start := time.Now()
+
+	inner()
+
+	// Capture the histogram over 18 geometric buckets 
+	delta := time.Since(start)
+	switch {
+	case delta < time.Millisecond:
+		Latencies.Add("0ms", 1)
+	case delta > 32768*time.Millisecond:
+		Latencies.Add(">32s", 1)
+	default:
+		for i := time.Millisecond; i < 32768*time.Millisecond; i *= 2 {
+			if delta >= i && delta < i*2 {
+				Latencies.Add(i.String(), 1)
+				break
+			}
+		}
+	}
 }
 
 // Fetch-me-a data URI!  Uses an injected client for tests or
@@ -62,6 +108,7 @@ func Format(contentType string, body []byte) string {
 	// len(data:;base64,) + rest as capacity
 	uri := make([]byte, 0, 16+len(contentType)+base64.StdEncoding.EncodedLen(len(body)))
 
+	// Start with header
 	uri = append(uri, []byte("data:")...)
 
 	// Split out each param, to extract the mime and maybe the charset
@@ -119,25 +166,43 @@ func DecodeUrls(query url.Values) (urls []string, err error) {
 	return
 }
 
+// Calls 'Get' in parallel for the URLs and returns a map of the results.
+//
+// The number of pending requests is currently unbounded and the strategy is to
+// let any pending requests complete after the timeout period.
+//
+// The expvar 'PendingRequests' contains a counter for the number of
+// requests that are in flight from this host to the origin
+//
 func GetAll(c http.Client, urls []string, after time.Duration) (results map[string]Result) {
+	Responses.Add(1)
+
 	results = make(map[string]Result, len(urls))
 	requests := make(chan Result, len(urls))
-	timeout := &ErrResult{fmt.Errorf("Request time %v exceeded", after)}
+	timeout := &ErrResult{fmt.Errorf("timeout %v", after)}
 
+	// Initialize all with timeout
 	for _, u := range urls {
 		results[u] = Result{u, "", nil, timeout}
 	}
 
+	// Fork off instrumeted requests
 	for _, u := range urls {
-		go func(url string) { requests <- Get(c, url) }(u)
+		go func(url string) {
+			instrumentGet(func() {
+				requests <- Get(c, url)
+			})
+		}(u)
 	}
 
+	// Join results up until the deadline, anything still pending
+	// will have been initialized with timeout
 	deadline := time.After(after)
-
 	for {
 		select {
 		case res := <-requests:
 			results[res.RequestURI] = res
+			SuccessRequests.Add(1)
 		case <-deadline:
 			return
 		}
