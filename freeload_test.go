@@ -127,6 +127,10 @@ func TestGetAll(t *testing.T) {
 	if bad.Response != nil {
 		t.Error("the bad response should not have headers")
 	}
+
+	if PendingRequests.String() != "1" {
+		t.Error("pending count should represent actual pending requests")
+	}
 }
 
 func TestDecodePrefixSuffixUrl(t *testing.T) {
