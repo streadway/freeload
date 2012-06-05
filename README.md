@@ -1,60 +1,49 @@
-# Load me up some data URIs
-
 Accepts an aggregate list of URLs and returns a JSON structure of a URI keyed
 object to either data URI or original URI.
 
 Useful for doing batch downloads of images and JSON based expansion of the
 results into CSS backround URLs.
 
-# Request API
+Checkout [doc.go documentation](https://github.com/streadway/freeload/blob/master/doc.go) for
+details.
 
-Assuming you're hosting this on localhost:7433 format take your list of origin
-URLs from the same host, and strip out the shared prefix and suffix and make a
-request with the origin paths encoded in the query string.
+# Installing
 
-Given you wish to request these URLs:
+Freeloader requires Go1 installable from these instructions:
 
-```
-http://origin/images/avatar-00123.jpg
-http://origin/images/avatar-00124.jpg
-http://origin/images/avatar-01234.jpg
-```
+http://golang.org/doc/install
 
-You would make a request like:
+Then install binary which you'll find in your GOPATH/bin:
 
-```
-http://localhost:7433/json?p=http://origin/images/avatar-0&s=.jpg&i=0123&i=0124&i=1234
-```
+  go get github.com/streadway/freeload/freeloader
 
-# Results
+# Contributing
 
-The Result JSON and HTTP headers are designed for partial failures on origin
-requests.  The format for for successful origin requests contains the
-cache-control header max-age of the minimum max-age of the origin max-age
-headers.  If any of the origin requests do not contain publically cachable
-content, the aggregate response will not be cachable.
+Patches and enhancements welcome!  Check the issues at
+https://github.com/streadway/freeload/issues and see if there is anything you
+can contribute.
 
-```
-HTTP 200 OK
-Cache-Control: public,max-age=XXX
+Make your change and tests in a branch other than `master` and use `go fmt`
+before your pull request.
 
-{
-"http://origin/images/avatar-00123.jpg":{"uri":"data:image/jpeg;base64,8QAHAAAAgIDAQEAA..."},
-"http://origin/images/avatar-00124.jpg":{"uri":"data:image/jpeg;base64,8QAHAAAAgIDAQEAA..."},
-"http://origin/images/avatar-01234.jpg":{"uri":"data:image/jpeg;base64,8QAHAAAAgIDAQEAA..."},
-}
-```
+# License
 
-If any of the origins fail to respond within time, the response will be mixed:
+Copyright (C) 2012 Sean Treadway <treadway@gmail.com>, SoundCloud Ltd.
 
-```
-HTTP 200 OK
-Cache-Control: private,no-store,max-age=0
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
 
-{
-"http://origin/images/avatar-00123.jpg":{"uri":"data:image/jpeg;base64,8QAHAAAAgIDAQEAA..."},
-"http://origin/images/avatar-00124.jpg":{"err":"timeout 500ms"},
-"http://origin/images/avatar-01234.jpg":{"uri":"data:image/jpeg;base64,8QAHAAAAgIDAQEAA..."},
-}
-```
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

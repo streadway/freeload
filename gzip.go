@@ -1,3 +1,6 @@
+// Copyright (C) 2012 Sean Treadway <treadway@gmail.com>, SoundCloud Ltd.
+// All rights reserved.  See README.md for license details.
+
 package freeload
 
 import (

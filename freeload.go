@@ -1,3 +1,6 @@
+// Copyright (C) 2012 Sean Treadway <treadway@gmail.com>, SoundCloud Ltd.
+// All rights reserved.  See README.md for license details.
+
 package freeload
 
 import (
@@ -92,9 +95,9 @@ func Format(contentType string, body []byte) string {
 //
 // Query parameters:
 //
-// p = 1..1 prefix, such as http://s3.amazonaws.com/base/path/00
-// i = 0..n inner, such as 101-26273-x23sn, if none exists, only use prefix
-// s = 0..1 suffix, such as _m.png will be applied to all URLs including prefix-only requests
+//   p = 1..1 prefix, such as http://s3.amazonaws.com/base/path/00
+//   i = 0..n inner, such as 101-26273-x23sn, if none exists, only use prefix
+//   s = 0..1 suffix, such as _m.png will be applied to all URLs including prefix-only requests
 func DecodeUrls(query url.Values) (urls []string, err error) {
 	prefix := query.Get("p")
 	if prefix == "" {
