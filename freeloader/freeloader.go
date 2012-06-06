@@ -37,9 +37,10 @@ func main() {
 	}
 
 	http.Handle(*jsonRoot,
-		freeload.GzipHandler(
-			freeload.CORS(*origins,
-				freeload.LoadJSONHandler(client, time.Duration(*timeout*1e9)))))
+		freeload.LogRequest(
+			freeload.GzipHandler(
+				freeload.CORS(*origins,
+					freeload.LoadJSONHandler(client, time.Duration(*timeout*float64(time.Second)))))))
 
 	log.Fatal(http.ListenAndServe(*bind, nil))
 }
