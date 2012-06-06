@@ -9,93 +9,291 @@
     <p> Assuming you have some source of URLs you'd like to batch, this shows
     how to build the compressed URL, and (eventually) demultiplex the response. </p>
 
-    <textarea id="src" cols="90" rows="10">
-      http://origin/image/0001-abcd-50x50.jpg
-      http://origin/image/0022-defg-49x50.jpg
-      http://origin/image/0333-higjkl-50x50.jpg
-      http://origin/image/0444-jklmnopq-50x50.jpg
-      http://origin/image/5555-a-50x50.jpg
-    </textarea>
+    <p> Start up the freeloader on http://localhost:7433/json and experiment
+    with different command line timeouts while reloading this page. </p>
 
-    <code>
-    <pre id="res">
-    </pre>
-    </code>
+    <pre><code>go run freeloader/freeloader.go --timeout=10</code></pre>
 
-    <script type="text/javascript">
-      // Takes an array of strings and Returns the largest common prefix
-      // across all strings.
-      //
-      // Runs in O(N*M) time
-      // Where N = number of strings and M = shortest string length.
-      //
-      // With 2 special cases -
-      //   0 strings returns undefined
-      //   1 string returns that string
-      function longestCommonPrefix(strs) {
-        var pre = "";
-
-        // Special case - 0:undefined, 1:first
-        if (strs.length <= 1) {
-          return strs[0];
-        }
-
-        for (var n = 0; n < strs[0].length; n++) {
-          var c = strs[0][n];
-          for (var m = 1, len = strs.length; m < len; m++) {
-            if (!strs[m] || strs[m][n] !== c) {
-              return pre;
-            }
-          }
-          pre += c;
-        }
-        return pre;
-      }
-
-      // Naive implementation which reverses the strings and applies
-      // the longestCommonPrefix and reverses the result.
-      function longestCommonSuffix(strs) {
-        var rev = [];
-        for (var i = 0; i < strs.length; i++) {
-          rev[rev.length] = strs[i].split('').reverse().join('');
-        }
-        return longestCommonPrefix(rev).split('').reverse().join('');
-      }
-
-      // Returns an array of 2 tuples containing query parameter name
-      // and query parameter value.
-      function freeloadParams(urls) {
-        var params = []
-          , prefix = longestCommonPrefix(urls)
-          , suffix = longestCommonSuffix(urls);
-
-        if (prefix) {
-          params.push(['p', prefix]);
-        }
-
-        // All strings are identical, only use prefix
-        if (prefix === suffix) {
-          suffix = "";
-        }
-
-        if (suffix) {
-          params.push(['s', suffix]);
-        }
-
-        for (var i = 0; i < urls.length; i++) {
-          params.push(['i', urls[i].substring(prefix.length, urls[i].length - suffix.length)]);
-        }
-
-        return params;
-      }
-
-      // Example code
-      var res = document.getElementById("res")
-        , src = document.getElementById("src")
-        , urls = src.value.trim().split(/\s+/)
-        , params = freeloadParams(urls);
-
-        res.innerHTML = params.join('\n');
-    </script>
+    <img data-src="http://i1.sndcdn.com/avatars-000005956424-vz9u5m-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000011196598-tr01ex-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000007671268-89v7o1-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000011073699-bi7y33-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013812662-s05gz4-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013225318-pffvxp-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000011231899-qc7gsb-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000006180287-2ofa8m-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013002697-timaio-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008584399-bl08r9-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012820954-zzuvh8-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012570686-vspo4h-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008398012-jn0jsx-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000014704215-q7aiuv-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000011519752-krwlfm-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000005859598-n83fn2-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015750441-kldlmc-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000003453108-o83ofk-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000014742175-307gsv-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016226757-yfs7x4-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015319366-hnple8-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016310273-uy1fp4-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015250974-8128oq-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000002507774-h8922l-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016198839-lmqkp2-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008807173-ogykt7-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016059849-hflf7c-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000009339021-uab8mt-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016251342-rxaao8-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000004569506-cc7hmi-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000002507774-h8922l-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000010336849-ckl4wh-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000003778015-g9c0ze-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000009713065-9753j1-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012150472-zsmbh6-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000014451384-ku2ycs-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015250632-pyhwqg-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016391283-v8ycvt-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008746615-zatmsd-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000005091472-0newcb-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000005925882-zvbjiu-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000009944710-khnvrf-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000010663893-pbkjo3-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016251342-rxaao8-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016039591-9p3n2z-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012052506-invir9-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000001676442-p1v7kq-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008952118-h3xc0t-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013575958-1ufjue-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000007647510-7xh5uv-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016359874-2p66ua-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012052506-invir9-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016198839-lmqkp2-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000005927253-rn4cf9-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000011477089-u8y6sc-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000006576474-n4maje-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015981925-m4ikpw-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000014704215-q7aiuv-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013566768-udpudu-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013024442-s38dvp-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012912972-wl6d4x-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000014704215-q7aiuv-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008070102-i87u4f-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000011765001-q4evsl-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000005699908-3tw37z-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000006548154-dlglig-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015655476-a41yjq-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000001026385-pdbs18-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000001011464-0z0fd2-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000002382578-02segm-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000009184688-hi3j6h-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015561829-fox1o5-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000003919513-ky2wjd-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000003002696-h0km3h-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000002779608-dfjk0e-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008456051-tcmbqp-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015275770-nth227-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012820954-zzuvh8-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012761671-ommmby-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000014638952-i9e5gf-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000007783773-qgrlco-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000009017580-5puj6s-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012694323-yppiq0-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008258361-o3i1uv-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015335659-r2t8cc-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012979867-w2zmd8-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000001457490-suhkon-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000006238837-sumjit-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015601214-hszahk-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000006800541-jhem48-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000011648158-9al52p-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013225318-pffvxp-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000003007826-xtmkh4-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000005337726-n6e6aw-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000001091544-r2cf38-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008726488-m0z6dr-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013989568-xjanpg-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016089142-thgk1d-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000005733857-4dd1kq-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012181330-g25b4j-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008840722-yyaz08-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015426806-7otpno-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016509381-gakei0-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008669047-f9fxlh-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000010902319-50ublb-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000009828824-5vxc76-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013527657-mxkeqi-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000010793376-fz4nzl-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000006228178-x4ysh9-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000010759341-ei51mj-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000009337330-gfjpnh-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000009115797-uj9zs2-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000006746791-kskpb4-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000006256113-df5axz-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016146791-pya3fw-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000011774582-n8hnie-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012115219-ed9i4f-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000003565535-x3cud3-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000002758233-nbntou-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000014480452-pyw9vm-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008605353-tbuprc-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016039591-9p3n2z-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000013989568-xjanpg-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000014947803-ltcpz7-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012105550-skkamp-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000006506879-c0yaeh-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000008382219-1fl6s8-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000009618280-vrdkj1-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000014904136-ffmxpl-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000016390943-jyyngb-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000012836474-av016u-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000010024599-04fky3-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000003611754-3e9sye-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000004911320-io3cmw-t20x20.jpg?d870dea" width="10" height="10">
+    <img data-src="http://i1.sndcdn.com/avatars-000015955567-4axi19-t20x20.jpg?d870dea" width="10" height="10">
   </body>
+
+  <script type="text/javascript">
+    // Takes an array of strings and Returns the largest common prefix
+    // across all strings.
+    //
+    // Runs in O(N*M) time
+    // Where N = number of strings and M = shortest string length.
+    //
+    // With 2 special cases -
+    //   0 strings returns undefined
+    //   1 string returns that string
+    function longestCommonPrefix(strs) {
+      var pre = "";
+
+      // Special case - 0:undefined, 1:first
+      if (strs.length <= 1) {
+        return strs[0];
+      }
+
+      for (var n = 0, maxn = strs[0].length; n < maxn; n++) {
+        var c = strs[0][n];
+        for (var m = 1, maxm = strs.length; m < maxm; m++) {
+          if (!strs[m] || strs[m][n] !== c) {
+            return pre;
+          }
+        }
+        pre += c;
+      }
+      return pre;
+    }
+
+    // Naive implementation which reverses the strings and applies
+    // the longestCommonPrefix and reverses the result.
+    function longestCommonSuffix(strs) {
+      var rev = [];
+      for (var i = 0, l = strs.length; i < l; i++) {
+        rev[rev.length] = strs[i].split('').reverse().join('');
+      }
+      return longestCommonPrefix(rev).split('').reverse().join('');
+    }
+
+    // Returns an array of 2 tuples containing query parameter name
+    // and query parameter value.
+    function freeloadParams(urls) {
+      var params = []
+        , prefix = longestCommonPrefix(urls)
+        , suffix = longestCommonSuffix(urls);
+
+      if (prefix) {
+        params.push(['p', prefix]);
+      }
+
+      // All strings are identical, only use prefix
+      if (prefix === suffix) {
+        suffix = "";
+      }
+
+      if (suffix) {
+        params.push(['s', suffix]);
+      }
+
+      for (var i = 0, l = urls.length; i < l; i++) {
+        params.push(['i', urls[i].substring(prefix.length, urls[i].length - suffix.length)]);
+      }
+
+      return params;
+    }
+
+    // Build a request URI from proto://host/path and URLs to batch
+    function freeloadUrl(base, urls) {
+      var params = freeloadParams(urls)
+        , e = encodeURIComponent;
+      for (var i = 0, l = params.length; i < l; i++) {
+        base += (i === 0 ? '?' : '&') + e(params[i][0]) + "=" + e(params[i][1]);
+      }
+      return base;
+    }
+
+    // Util - find unique elements
+    function uniq(arr) {
+       var a = [];
+       for (var i = 0, l = arr.length, x = arr[0], u = {}; i < l; i++, x=arr[i]){
+          if (u.hasOwnProperty(x)) { continue; }
+          a.push(x);
+          u[x] = 1;
+       }
+       return a;
+    }
+
+    // Returns an XHR instance ready to be invoked with a freeload URL
+    function request(imgs, deadline) {
+      // Continuation after the response to fill the src attribute
+      // for each image from either the 'uri' from the value keyed
+      // on the data-src attribute of the image, or the data-src
+      // attribute itself.  Expects an object for dataUris that
+      // looks like:
+      //
+      // {
+      //   "img[0].data-src": { "uri":"data:image/jpeg;base64,..." },
+      //   "img[1].data-src": { "err":"whatever" },
+      //   ...
+      // }
+      //
+      // Missing a key or missing 'uri' key indicates failure and the
+      // original data-src attribute should be used for the browser to
+      // resolve the result.
+      function complete(results, imgs) {
+        for (var i = 0, l = imgs.length; i < l; i++) {
+          var origin = imgs[i].dataset.src
+            , result = results[origin];
+
+          imgs[i].src = result ? result.uri || origin : origin;
+        }
+      }
+
+      var xhr = new XMLHttpRequest()
+        , breaker = setTimeout(function() { xhr.abort() }, deadline);
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          clearTimeout(breaker);
+          if (xhr.status == 200) {
+            // TODO umm... cleanse all evil
+            complete(eval('('+xhr.responseText+')'), imgs);
+          } else {
+            console.log("fallback to data-src as src:", xhr.status, xhr.responseText);
+            complete({}, imgs);
+          }
+        }
+      }
+
+      return xhr;
+    }
+
+    // Drive the example
+    var urls = []
+      , imgs = document.getElementsByTagName("img");
+
+    for (var i = 0, l = imgs.length; i < l; i++) {
+      urls.push(imgs[i].dataset.src);
+    }
+
+    var req = request(imgs, 10000);
+    req.open("GET", freeloadUrl("http://localhost:7433/json", urls), true);
+    req.send(null);
+  </script>
 </html>
