@@ -1,0 +1,101 @@
+<!--
+// Copyright (C) 2012 Sean Treadway <treadway@gmail.com>, SoundCloud Ltd.
+// All rights reserved.  See README.md for license details.
+-->
+<html>
+  <body>
+    <h1>Freeload client example</h1>
+
+    <p> Assuming you have some source of URLs you'd like to batch, this shows
+    how to build the compressed URL, and (eventually) demultiplex the response. </p>
+
+    <textarea id="src" cols="90" rows="10">
+      http://origin/image/0001-abcd-50x50.jpg
+      http://origin/image/0022-defg-49x50.jpg
+      http://origin/image/0333-higjkl-50x50.jpg
+      http://origin/image/0444-jklmnopq-50x50.jpg
+      http://origin/image/5555-a-50x50.jpg
+    </textarea>
+
+    <code>
+    <pre id="res">
+    </pre>
+    </code>
+
+    <script type="text/javascript">
+      // Takes an array of strings and Returns the largest common prefix
+      // across all strings.
+      //
+      // Runs in O(N*M) time
+      // Where N = number of strings and M = shortest string length.
+      //
+      // With 2 special cases -
+      //   0 strings returns undefined
+      //   1 string returns that string
+      function longestCommonPrefix(strs) {
+        var pre = "";
+
+        // Special case - 0:undefined, 1:first
+        if (strs.length <= 1) {
+          return strs[0];
+        }
+
+        for (var n = 0; n < strs[0].length; n++) {
+          var c = strs[0][n];
+          for (var m = 1, len = strs.length; m < len; m++) {
+            if (!strs[m] || strs[m][n] !== c) {
+              return pre;
+            }
+          }
+          pre += c;
+        }
+        return pre;
+      }
+
+      // Naive implementation which reverses the strings and applies
+      // the longestCommonPrefix and reverses the result.
+      function longestCommonSuffix(strs) {
+        var rev = [];
+        for (var i = 0; i < strs.length; i++) {
+          rev[rev.length] = strs[i].split('').reverse().join('');
+        }
+        return longestCommonPrefix(rev).split('').reverse().join('');
+      }
+
+      // Returns an array of 2 tuples containing query parameter name
+      // and query parameter value.
+      function freeloadParams(urls) {
+        var params = []
+          , prefix = longestCommonPrefix(urls)
+          , suffix = longestCommonSuffix(urls);
+
+        if (prefix) {
+          params.push(['p', prefix]);
+        }
+
+        // All strings are identical, only use prefix
+        if (prefix === suffix) {
+          suffix = "";
+        }
+
+        if (suffix) {
+          params.push(['s', suffix]);
+        }
+
+        for (var i = 0; i < urls.length; i++) {
+          params.push(['i', urls[i].substring(prefix.length, urls[i].length - suffix.length)]);
+        }
+
+        return params;
+      }
+
+      // Example code
+      var res = document.getElementById("res")
+        , src = document.getElementById("src")
+        , urls = src.value.trim().split(/\s+/)
+        , params = freeloadParams(urls);
+
+        res.innerHTML = params.join('\n');
+    </script>
+  </body>
+</html>
