@@ -181,7 +181,7 @@ func GetAll(c http.Client, urls []string, after time.Duration) (results map[stri
 	requests := make(chan Result, len(urls))
 	timeout := &ErrResult{fmt.Errorf("timeout %v", after)}
 
-	// Initialize all with timeout
+	// Initialize pending requests all with timeout
 	for _, u := range urls {
 		results[u] = Result{u, "", nil, timeout}
 	}
@@ -198,7 +198,7 @@ func GetAll(c http.Client, urls []string, after time.Duration) (results map[stri
 	// Join results up until the deadline, anything still pending
 	// will have been initialized with timeout
 	deadline := time.After(after)
-	for {
+	for pending := len(urls); pending > 0; pending-- {
 		select {
 		case res := <-requests:
 			results[res.RequestURI] = res
